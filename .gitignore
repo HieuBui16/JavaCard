@@ -2,3 +2,4 @@ ECHO is on.
 .settings
 bin
 .classpath
+.jcop
