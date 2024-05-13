@@ -1,5 +1,7 @@
 package eccproject;
 
+import javacard.framework.ISO7816;
+import javacard.framework.ISOException;
 import javacard.framework.JCSystem;
 import javacard.framework.Util;
 import javacard.security.AESKey;
@@ -62,16 +64,9 @@ public class SecureChannel implements channel{
 	}
 	
 	public short receive(byte[] inBuf, short inOff, short inLen, byte[] outBuf, short outOff) {
-//		Util.arrayCopyNonAtomic(inBuf, (short) (inOff + 1), tempPub, (short) 0, (short) 65);
-//		secp256k1.deriveShareKey(p1PrivateKey, tempPub, tempShare, (short) 0);
-//		
-//		Util.arrayFillNonAtomic(tempShare, (short) 65, (short) 1, inBuf[0]);
-//		
-//		sha256.doFinal(tempShare, (short) 0, (short) 66, tempShare, (short) 0);
-//		
-//		Util.arrayCopyNonAtomic(tempShare, (short) 0, share, (short) 0, (short) 16);
-//		
-//		secretKey.setKey(tempShare, (short) 0);	
+		if (!secretKey.isInitialized()) {
+			ISOException.throwIt(ISO7816.SW_SECURITY_STATUS_NOT_SATISFIED);
+		}
 		return decode(inBuf, (short) inOff, (short) inLen, outBuf,  outOff);
 	}
 	
@@ -90,6 +85,7 @@ public class SecureChannel implements channel{
 	}
 	
 	private short decode(byte[] inBuf, short inOff, short inLen, byte[] outBuf, short outOff) {
+	
 		cipher.init(secretKey, Cipher.MODE_DECRYPT);
 		short m1 = cipher.update(inBuf, inOff, inLen, outBuf, outOff);
 		short m2 = cipher.doFinal(inBuf, (short) (inOff + 16) , (short) (inLen - 16), outBuf, (short) (outOff + 16));

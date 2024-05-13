@@ -182,9 +182,6 @@ public class ECDHApplet extends Applet {
 		p1ShareKey.setKey(buffer, (short) 0);
 
 		apdu.setOutgoingAndSend((short) 0, (short) finall);
-//		apdu.setOutgoing();
-//		apdu.setOutgoingLength((short) temSecret.length);
-//		apdu.sendBytesLong(temSecret, (short) 0, (short) (short) temSecret.length);
 	}
 
 	/*
